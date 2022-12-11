@@ -1,1 +1,1 @@
-Este repositório descreve o funcionamento de um robô que coleta 
+Este repositório descreve o funcionamento de um robô que coleta a lista dos livros mais vendidos do Brasil de 2010 até o presente. Seu funcionamento parte de uma amostra coletada pelo portal PublishNews e a divulgação é feita por meio da Geração de Língua Natural.
