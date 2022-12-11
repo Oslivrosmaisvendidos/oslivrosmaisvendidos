@@ -53,86 +53,57 @@ class PublishSpider(scrapy.Spider):
 
 A segunda parte é responsável por criar as frases por meio da Inteligência Artificial. A seguir, transcrevemos o código. Para esta etapa, utilizamos o Google Colab.
 
+
+
+
 !git clone https://github.com/ThiagoCF05/Any2Some
 
-import os
-os.chdir('Any2Some')
+import os os.chdir('Any2Some')
 
 !pip3 install -r requirements.txt
 
-!python3 train.py --tokenizer facebook/bart-large \
-                --model facebook/bart-large \
-                --src_train 'trainsrc.txt' \
-                --trg_train 'traintrg.txt' \
-                --src_dev 'devsrc.txt' \
-                --trg_dev 'devtrg.txt' \
-                --epochs 30 \
-                --learning_rate 1e-5 \
-                --batch_size 2 \
-                --early_stop 5 \
-                --max_length 180 \
-                --write_path bart \
-                --language portuguese \
-                --verbose \
-                --batch_status 2 \
-                --cuda
-                
+!python3 train.py --tokenizer facebook/bart-large
+--model facebook/bart-large
+--src_train 'trainsrc.txt'
+--trg_train 'traintrg.txt'
+--src_dev 'devsrc.txt'
+--trg_dev 'devtrg.txt'
+--epochs 30
+--learning_rate 1e-5
+--batch_size 2
+--early_stop 5
+--max_length 180
+--write_path bart
+--language portuguese
+--verbose
+--batch_status 2
+--cuda
 
-!python3 evaluate.py --tokenizer facebook/bart-large \
-                --model bart/model \
-                --src_test 'testesrc.txt' \
-                --trg_test 'testetrg.txt' \
-                --batch_size 4 \
-                --max_length 180 \
-                --write_dir results \
-                --language portuguese \
-                --verbose \
-                --batch_status 16 \
-                --cuda
-                
+!python3 evaluate.py --tokenizer facebook/bart-large
+--model bart/model
+--src_test 'testesrc.txt'
+--trg_test 'testetrg.txt'
+--batch_size 4
+--max_length 180
+--write_dir results
+--language portuguese
+--verbose
+--batch_status 16
+--cuda
+
 from models.bartgen import BARTGen
 
-batch_size = 4
-batch_status = 15
-language = 'portuguese'
-verbose = False
-device = 'cpu'
+batch_size = 4 batch_status = 15 language = 'portuguese' verbose = False device = 'cpu'
 
-    # model
-max_length = 180
-tokenizer_path = 'facebook/bart-large'
-model_path = 'bart/model'
+# model
+max_length = 180 tokenizer_path = 'facebook/bart-large' model_path = 'bart/model'
 
-src_lang = 'pt_XX'
-trg_lang = 'pt_XX'
-generator = BARTGen(tokenizer_path, model_path, max_length, device, False)
+src_lang = 'pt_XX' trg_lang = 'pt_XX' generator = BARTGen(tokenizer_path, model_path, max_length, device, False)
 
+import csv import random import pandas import pandas as df aleat = random.randint(2010, 2021)
 
-import csv
-import random
-import pandas
-import pandas as df
-aleat = random.randint(2010, 2021)
+with open(f'ano {aleat}.csv', 'r') as file: reader = csv.reader(file, delimiter = '\t') n = 20 #número de linhas do arquivo s = 1 #Número de linhas desejadas filename = f'ano {aleat}.csv' skip = sorted(random.sample(range(n),n-s)) df = pandas.read_csv(file, skiprows=skip) df.to_csv('temp.csv')
 
-with open(f'ano {aleat}.csv', 'r') as file:
-    reader = csv.reader(file, delimiter = '\t')
-    n = 20 #número de linhas do arquivo
-    s = 1 #Número de linhas desejadas
-    filename = f'ano {aleat}.csv'
-    skip = sorted(random.sample(range(n),n-s))
-    df = pandas.read_csv(file, skiprows=skip)
-    df.to_csv('temp.csv')
+with open('temp.csv', 'r') as file: reader = csv.reader(file, delimiter = '\t') for row in reader: output = generator(row)
 
-with open('temp.csv', 'r') as file:
-    reader = csv.reader(file, delimiter = '\t')
-    for row in reader:
-        output = generator(row)
-
-
-novoTuite = str(output)
-char_remov = ["[", "]", "'"]
-for char in char_remov:
-    novoTuite = novoTuite.replace(char, "")
-print(novoTuite)
-
-
+novoTuite = str(output) char_remov = ["[", "]", "'"] for char in char_remov: novoTuite = novoTuite.replace(char, "") print(novoTuite)
